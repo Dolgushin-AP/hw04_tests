@@ -36,8 +36,8 @@ class PostViewsTests(TestCase):
             (
                 reverse('posts:group_list', kwargs={'slug': 'slug_slug'})
             ): 'posts/group_list.html',
-            (reverse('posts:profile', kwargs={'username': self.user.username})
-            ): 'posts/profile.html',
+            reverse('posts:profile', kwargs={'username': self.user.username}):
+            'posts/profile.html',
             (
                 reverse('posts:post_detail', kwargs={'post_id': self.post.pk})
             ): 'posts/post_detail.html',
