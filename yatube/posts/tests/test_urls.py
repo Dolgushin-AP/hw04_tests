@@ -55,22 +55,22 @@ class PostUrlsTest(TestCase):
     def test_post_edit_url(self):
         author = User.objects.create_user(username='test')
         post = Post.objects.create(
-	        author=author,
-	        text='text',
-	        group=self.group
+            author=author,
+            text='text',
+            group=self.group
         )
         self.authorized_client.force_login(author)
         response = self.authorized_client.get(f'/posts/{post.id}/edit/')
         self.assertEquals(response.status_code, HTTPStatus.OK)
 
     def test_post_edit_url_redirect_anonymous(self):
-        """Страница posts/<int:post_id>/edit/ перенаправляет анонимного пользователя."""
+        """Страница posts/<int:post_id>/edit/ перенаправляет анонима."""
         response = self.guest_client.get('/posts/1/edit/', follow=True)
         self.assertRedirects(
             response, ('/auth/login/?next=/posts/1/edit/'))
 
     def test_post_create_url_redirect_anonymous(self):
-        """Страница create/ перенаправляет анонимного пользователя."""
+        """Страница create/ перенаправляет анонима."""
         response = self.guest_client.get('/create/', follow=True)
         self.assertRedirects(
             response, ('/auth/login/?next=/create/'))
@@ -79,7 +79,7 @@ class PostUrlsTest(TestCase):
         """Несуществующая страница."""
         response = self.guest_client.get('/unexisting_page/')
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
-      
+
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_url_names = {

@@ -76,23 +76,23 @@ class PostFormTests(TestCase):
             reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True
-        )     
+        )
         self.post.refresh_from_db()
         self.assertRedirects(
             response, f'/auth/login/?next=/posts/{self.post.id}/edit/'
-        )    
+        )
         self.assertNotEqual(self.post.text, form_data['text'])
-        self.assertEqual(self.post.group.id, form_data['group']) 
-    
+        self.assertEqual(self.post.group.id, form_data['group'])
+
     def test_post_edit_by_not_author(self):
         """Форма поста, заполненнная не автором
         на странице post_edit, не меняет значение полей поста.
         """
         author = User.objects.create_user(username='smbd')
         group = Group.objects.create(
-             title='Тестовая группа2',
-             slug='slug_slug3',
-             description='Тестовое описание3',
+            title='Тестовая группа2',
+            slug='slug_slug3',
+            description='Тестовое описание3',
         )
         post1 = Post.objects.create(
             author=author,
@@ -112,7 +112,7 @@ class PostFormTests(TestCase):
         )
         post1.refresh_from_db()
         self.assertRedirects(
-             response, f'/posts/{post1.id}/'
+            response, f'/posts/{post1.id}/'
         )
         self.assertNotEqual(post1.text, form_data['text'])
         self.assertNotEqual(post1.group.id, form_data['group'])

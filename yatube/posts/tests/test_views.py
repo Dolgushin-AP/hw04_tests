@@ -37,7 +37,8 @@ class PostViewsTests(TestCase):
                 reverse('posts:group_list', kwargs={'slug': 'slug_slug'})
             ): 'posts/group_list.html',
             (
-                reverse('posts:profile', kwargs={'username': self.user.username})
+                reverse('posts:profile',
+                kwargs={'username': self.user.username})
             ): 'posts/profile.html',
             (
                 reverse('posts:post_detail', kwargs={'post_id': self.post.pk})
@@ -51,7 +52,7 @@ class PostViewsTests(TestCase):
             with self.subTest(template=reverse_name):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
-    
+
     def test_index_page_show_correct_context(self):
         """Шаблон index сформирован с правильным контекстом."""
         response = (self.authorized_client.get(
@@ -101,6 +102,7 @@ class PostViewsTests(TestCase):
             with self.subTest(value=value):
                 form_field = response.context['form'].fields[value]
                 self.assertIsInstance(form_field, expected)
+
 
 class PaginatorViewsTest(TestCase):
     @classmethod
@@ -184,7 +186,7 @@ class PaginatorViewsTest(TestCase):
         self.authorized_client.force_login(self.user)
 
     def test_first_page_contains_ten_records(self):
-        response = self.client.get(reverse('posts:index')) 
+        response = self.client.get(reverse('posts:index'))
         self.assertEqual(len(response.context['page_obj']), 10)
 
     def test_second_page_contains_three_records(self):
