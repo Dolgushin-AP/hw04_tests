@@ -9,10 +9,21 @@ CHAR_LIMIT = 15
 
 class Group(models.Model):
     """ Модель для сообществ """
-    title = models.CharField(verbose_name='Название группы', max_length=200)
-    slug = models.SlugField(verbose_name='Связанная ссылка',
-                            max_length=100, unique=True)
-    description = models.TextField(verbose_name='Описание группы')
+    title = models.CharField(
+        verbose_name='Название группы',
+        max_length=200,
+        help_text='Введите название группы',
+    )
+    slug = models.SlugField(
+        verbose_name='Связанная ссылка',
+        max_length=100,
+        unique=True,
+        help_text='Введите адрес ссылки',
+    )
+    description = models.TextField(
+        verbose_name='Описание группы',
+        help_text='Введите описание',
+    )
 
     class Meta:
         verbose_name = 'Группа'
@@ -31,16 +42,24 @@ class Post(models.Model):
         null=True,
         on_delete=models.SET_NULL,
         verbose_name='Группа',
-        related_name='posts'
+        related_name='posts',
+        help_text='Выберите группу из списка или создайте новую',
     )
-    text = models.TextField(verbose_name='Текст поста')
-    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
-
+    text = models.TextField(
+        verbose_name='Текст поста',
+        help_text='Введите текст поста',
+    )
+    pub_date = models.DateTimeField(
+        verbose_name='Дата публикации',
+        auto_now_add=True,
+        help_text='Заполняется автоматически',
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор',
-        related_name='posts'
+        related_name='posts',
+        help_text='Выберите автора из списка или создайте нового',
     )
 
     class Meta:

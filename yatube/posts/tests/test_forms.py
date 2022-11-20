@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -24,6 +26,21 @@ class PostFormTests(TestCase):
             text='Тестовый пост',
             group=cls.group
         )
+        cls.urls = {
+            reverse('posts:index'): 'posts/index.html',
+            (
+                reverse('posts:group_list', kwargs={'slug': 'slug_slug'})
+            ): 'posts/group_list.html',
+            reverse('posts:profile', kwargs={'username': cls.user}):
+            'posts/profile.html',
+            (
+                reverse('posts:post_detail', kwargs={'post_id': cls.post.id})
+            ): 'posts/post_detail.html',
+            (
+                reverse('posts:post_edit', kwargs={'post_id': cls.post.id})
+            ): 'posts/create_post.html',
+            reverse('posts:post_create'): 'posts/create_post.html',
+        }
 
     def setUp(self):
         self.guest_client = Client()
@@ -32,34 +49,36 @@ class PostFormTests(TestCase):
 
     def test_create_post(self):
         """Валидная форма на странице create создает запись в Post."""
-        tasks_count = Post.objects.count()
+        posts_count = Post.objects.count()
         form_data = {
             'text': 'Тестовый пост1',
-            'group': PostFormTests.group.id,
+            'group': self.group.id,
         }
         response = self.authorized_client.post(
-            reverse('posts:post_create'),
+            self.urls,
             data=form_data,
             follow=True
         )
         self.assertRedirects(response, reverse(
             'posts:profile', kwargs={'username': 'auth'})
         )
-        self.assertEqual(Post.objects.count(), tasks_count + 1)
-        self.assertTrue(
-            Post.objects.filter(text=form_data['text']).exists()
-        )
+        self.assertEqual(Post.objects.count(), posts_count + 1)
+        post_create = Post.objects.latest('id')
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(post_create.text, form_data['text'])
+        self.assertEqual(post_create.author, self.user)
+        self.assertEqual(post_create.group.id, form_data['group'])
 
     def test_create_post_by_anonymous(self):
         """Форма поста, заполненнная не авторизованным клиентом
          на странице create, не создает запись в Post.
          """
-        tasks_count = Post.objects.count()
+        posts_count = Post.objects.count()
         form_data = {
             'text': 'Тестовый пост гостя',
-            'group': PostFormTests.group.id,
+            'group': self.group.id,
         }
-        self.assertEqual(Post.objects.count(), tasks_count)
+        self.assertEqual(Post.objects.count(), posts_count)
         self.assertFalse(
             Post.objects.filter(text=form_data['text']).exists()
         )
