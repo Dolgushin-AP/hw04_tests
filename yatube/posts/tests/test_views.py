@@ -126,10 +126,10 @@ class PaginatorViewsTest(TestCase):
             'posts/index.html': reverse('posts:index') + url_params,
             'posts/group_list.html':
                 (reverse('posts:group_list', kwargs={'slug': self.group.slug}
-                        ) + url_params),
+                    ) + url_params),
             'posts/profile.html':
                 (reverse('posts:profile', kwargs={'username': self.user}
-                        ) + url_params),
+                    ) + url_params),
         }
         for template, reverse_name in templates_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
@@ -148,10 +148,10 @@ class PaginatorViewsTest(TestCase):
         response = self.client.get(reverse(
             'posts:group_list', kwargs={'slug': 'slug_slug'}))
         self.assertEqual(len(response.context['page_obj']),
-            settings.POSTS_PER_PAGE)
+        settings.POSTS_PER_PAGE)
 
     def test_first_page_profile_contains_ten_records(self):
         response = self.authorized_client.get(reverse(
             'posts:profile', kwargs={'username': 'auth'}))
         self.assertEqual(len(response.context['page_obj']),
-            settings.POSTS_PER_PAGE)
+        settings.POSTS_PER_PAGE)
