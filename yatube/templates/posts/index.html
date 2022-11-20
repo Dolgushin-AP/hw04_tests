@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %} Yatube - Главная страница {% endblock %}
+{% block content %}
+  <h1>{{ title }}</h1>
+  {% for post in page_obj %}
+    {% include 'includes/post_card.html' with show_link=True %}
+    {% if not forloop.last %}<hr>{% endif %}
+  {% endfor %}
+  {% include 'includes/paginator.html' %}
+{% endblock %}
