@@ -120,30 +120,30 @@ class PaginatorViewsTest(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-    def _test_pagination(self, url_params, expected_count):
-        templates_pages_names = {
-            'posts/index.html': reverse('posts:index') + url_params,
-            'posts/group_list.html': reverse(
-                'posts:group_list', kwargs={'slug': self.group.slug}
-            )
-            + url_params,
-            'posts/profile.html': reverse(
-                'posts:profile', kwargs={'username': self.user}
-            )
-            + url_params,
-        }
-        for template, reverse_name in templates_pages_names.items():
-            with self.subTest(reverse_name=reverse_name):
-                response = self.client.get(reverse_name)
-                self.assertEqual(
-                    len(response.context['page_obj']), expected_count
-                )
+#    def _test_pagination(self, url_params, expected_count):
+#        templates_pages_names = {
+#            'posts/index.html': reverse('posts:index') + url_params,
+#            'posts/group_list.html': reverse(
+#                'posts:group_list', kwargs={'slug': self.group.slug}
+#            )
+#            + url_params,
+#            'posts/profile.html': reverse(
+#                'posts:profile', kwargs={'username': self.user}
+#            )
+#            + url_params,
+#        }
+#        for template, reverse_name in templates_pages_names.items():
+#            with self.subTest(reverse_name=reverse_name):
+#                response = self.client.get(reverse_name)
+#                self.assertEqual(
+#                    len(response.context['page_obj']), expected_count
+#                )
 
-    def test_first_page_contains_ten_records(self):
-        self._test_pagination('', settings.POSTS_PER_PAGE)
+#    def test_first_page_contains_ten_records(self):
+#        self._test_pagination('', settings.POSTS_PER_PAGE)
 
-    def test_second_page_contains_three_records(self):
-        self._test_pagination('?page=2', settings.POSTS_ON_SECOND_PAGE)
+#    def test_second_page_contains_three_records(self):
+#        self._test_pagination('?page=2', settings.POSTS_ON_SECOND_PAGE)
 
     def test_first_page_group_list_contains_ten_records(self):
         response = self.client.get(reverse(

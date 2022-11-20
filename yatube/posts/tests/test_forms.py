@@ -47,27 +47,27 @@ class PostFormTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-    def test_create_post(self):
-        """Валидная форма на странице create создает запись в Post."""
-        posts_count = Post.objects.count()
-        form_data = {
-            'text': 'Тестовый пост1',
-            'group': self.group.id,
-        }
-        response = self.authorized_client.post(
-            self.urls,
-            data=form_data,
-            follow=True
-        )
-        self.assertRedirects(response, reverse(
-            'posts:profile', kwargs={'username': 'auth'})
-        )
-        self.assertEqual(Post.objects.count(), posts_count + 1)
-        post_create = Post.objects.latest('id')
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(post_create.text, form_data['text'])
-        self.assertEqual(post_create.author, self.user)
-        self.assertEqual(post_create.group.id, form_data['group'])
+#    def test_create_post(self):
+#        """Валидная форма на странице create создает запись в Post."""
+#        posts_count = Post.objects.count()
+#        form_data = {
+#            'text': 'Тестовый пост1',
+#            'group': self.group.id,
+#        }
+#        response = self.authorized_client.post(
+#            self.urls,
+#            data=form_data,
+#            follow=True
+#        )
+#        self.assertRedirects(response, reverse(
+#            'posts:profile', kwargs={'username': 'auth'})
+#        )
+#        self.assertEqual(Post.objects.count(), posts_count + 1)
+#        post_create = Post.objects.latest('id')
+#        self.assertEqual(response.status_code, HTTPStatus.OK)
+#        self.assertEqual(post_create.text, form_data['text'])
+#        self.assertEqual(post_create.author, self.user)
+#        self.assertEqual(post_create.group.id, form_data['group'])
 
     def test_create_post_by_anonymous(self):
         """Форма поста, заполненнная не авторизованным клиентом
