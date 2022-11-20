@@ -78,7 +78,7 @@ class PostViewsTests(TestCase):
             for reverse_name, response_name in context_objects.items():
                 with self.subTest(reverse_name=reverse_name):
                     self.assertEqual(response_name, reverse_name)
-                
+
     def test_post_detail_page_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
         response = (self.authorized_client.get(
@@ -113,10 +113,8 @@ class PaginatorViewsTest(TestCase):
         Post.objects.bulk_create([Post(
             author=cls.user,
             text=f'Тестовый пост {i}',
-            group=cls.group
-            )
-            for i in range(13)]
-        )
+            group=cls.group)
+            for i in range(13)])
 
     def setUp(self):
         self.guest_client = Client()
@@ -127,9 +125,11 @@ class PaginatorViewsTest(TestCase):
         templates_pages_names = {
             'posts/index.html': reverse('posts:index') + url_params,
             'posts/group_list.html':
-                reverse('posts:group_list', kwargs={'slug': self.group.slug}) + url_params,
+                (reverse('posts:group_list', kwargs={'slug': self.group.slug}
+                        ) + url_params),
             'posts/profile.html':
-                reverse('posts:profile', kwargs={'username': self.user}) + url_params,
+                (reverse('posts:profile', kwargs={'username': self.user}
+                        ) + url_params),
         }
         for template, reverse_name in templates_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
@@ -147,9 +147,11 @@ class PaginatorViewsTest(TestCase):
     def test_first_page_group_list_contains_ten_records(self):
         response = self.client.get(reverse(
             'posts:group_list', kwargs={'slug': 'slug_slug'}))
-        self.assertEqual(len(response.context['page_obj']), settings.POSTS_PER_PAGE)
+        self.assertEqual(len(response.context['page_obj']),
+            settings.POSTS_PER_PAGE)
 
     def test_first_page_profile_contains_ten_records(self):
         response = self.authorized_client.get(reverse(
             'posts:profile', kwargs={'username': 'auth'}))
-        self.assertEqual(len(response.context['page_obj']), settings.POSTS_PER_PAGE)
+        self.assertEqual(len(response.context['page_obj']),
+            settings.POSTS_PER_PAGE)
