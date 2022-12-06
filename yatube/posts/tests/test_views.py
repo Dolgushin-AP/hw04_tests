@@ -83,7 +83,7 @@ class PostViewsTests(TestCase):
         name, _, _ = self.index_url
         response = self.authorized_client.get(reverse(name))
         self.assertIn('page_obj', response.context, msg='присутствует')
-        self.assertGreaterEqual(len(response.context['page_obj']),1)
+        self.assertGreaterEqual(len(response.context['page_obj']), 1)
         first_object = response.context['page_obj'][0]
         self.custom_checking_func(first_object)
 
@@ -92,7 +92,7 @@ class PostViewsTests(TestCase):
         name, args, _ = self.group_url
         response = self.authorized_client.get(reverse(name, args=args))
         self.assertIn('page_obj', response.context, msg='присутствует')
-        self.assertGreaterEqual(len(response.context['page_obj']),1)
+        self.assertGreaterEqual(len(response.context['page_obj']), 1)
         first_object = response.context['page_obj'][0]
         self.custom_checking_func(first_object)
 
@@ -101,7 +101,7 @@ class PostViewsTests(TestCase):
         name, args, _ = self.profile_url
         response = self.authorized_client.get(reverse(name, args=args))
         self.assertIn('page_obj', response.context, msg='присутствует')
-        self.assertGreaterEqual(len(response.context['page_obj']),1)
+        self.assertGreaterEqual(len(response.context['page_obj']), 1)
         first_object = response.context['page_obj'][0]
         self.custom_checking_func(first_object)
 
