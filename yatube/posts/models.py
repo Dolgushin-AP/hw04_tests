@@ -43,7 +43,7 @@ class Post(models.Model):
         on_delete=models.SET_NULL,
         verbose_name='Группа',
         related_name='posts',
-        help_text='Выберите группу из списка или создайте новую',
+        help_text='Выберите группу из списка',
     )
     text = models.TextField(
         verbose_name='Текст поста',

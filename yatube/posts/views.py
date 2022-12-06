@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.conf import settings
 
 from .forms import PostForm
 from .models import Group, Post, User
@@ -25,7 +24,7 @@ def group_posts(request, slug):
     """ Посты, отфильтрованные по группам """
     template = 'posts/group_list.html'
     group = get_object_or_404(Group, slug=slug)
-    posts = group.posts.all()[:settings.POSTS_PER_PAGE]
+    posts = group.posts.all()
     paginator = paginate(posts, request)
     context = {
         'group': group,

@@ -16,11 +16,11 @@ class PostModelTest(TestCase):
         cls.post = Post.objects.create(
             group=cls.group,
             author=cls.user,
-            text='Тестовый пост для проверки правильности обрезки',
+            text='Тестовый пост'*2*settings.CHAR_LIMIT,
         )
 
     def test_models_have_correct_object_names(self):
-        """Проверяем, что у моделей постов/групп корректно работает __str__."""
+        """Проверяем, что у моделей постов/групп корректно работает __str__"""
         expected_object_name = {
             str(self.post): self.post.text[:settings.CHAR_LIMIT],
             str(self.group): self.group.title,
@@ -47,7 +47,7 @@ class PostModelTest(TestCase):
         """help_text в полях совпадает с ожидаемым."""
         field_help_texts = {
             'text': 'Введите текст поста',
-            'group': 'Выберите группу из списка или создайте новую',
+            'group': 'Выберите группу из списка',
         }
         for field, expected_value in field_help_texts.items():
             with self.subTest(field=field):

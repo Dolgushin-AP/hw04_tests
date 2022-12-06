@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -138,6 +139,7 @@ LOGIN_REDIRECT_URL = 'posts:index'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 POSTS_PER_PAGE = 10
-POSTS_ON_FIRST_PAGE = 13
+ALL_POSTS = 13
 POSTS_ON_SECOND_PAGE = 3
 CHAR_LIMIT = 15
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
