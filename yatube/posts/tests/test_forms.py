@@ -25,7 +25,6 @@ class PostFormTests(TestCase):
         cls.post_edit_url = ('posts:post_edit', (cls.post.id,))
         cls.create_post_url = ('posts:post_create', None)
         cls.user_login_url = ('users:login', None)
-       
 
     def setUp(self):
         self.guest_client = Client()
@@ -97,7 +96,7 @@ class PostFormTests(TestCase):
             data=form_data,
             follow=True,
         )
-        create = reverse(name, args=args)  
+        create = reverse(name, args=args)
         name, args = self.user_login_url
         login = reverse(name, args=args)
         self.assertRedirects(response, f'{login}?next={create}')
