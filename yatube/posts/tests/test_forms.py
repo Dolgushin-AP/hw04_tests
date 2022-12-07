@@ -23,7 +23,9 @@ class PostFormTests(TestCase):
             group=cls.group
         )
         cls.post_edit_url = ('posts:post_edit', (cls.post.id,))
-        cls.create_post_url = ('posts:post_create',)
+        cls.create_post_url = ('posts:post_create', None)
+        cls.user_login_url = ('users:login', None)
+       
 
     def setUp(self):
         self.guest_client = Client()
@@ -82,3 +84,21 @@ class PostFormTests(TestCase):
         self.assertEqual(post_post_edit.text, form_data['text'])
         self.assertEqual(post_post_edit.author, self.user)
         self.assertEqual(post_post_edit.group.id, form_data['group'])
+
+    def test_create_post(self):
+        """Неавторизованный пользователь не отправит форму записи в Post."""
+        posts_count = Post.objects.count()
+        form_data = {
+            'text': 'Тестовый пост',
+        }
+        name, args = self.create_post_url
+        response = self.guest_client.post(
+            reverse(name, args=args),
+            data=form_data,
+            follow=True,
+        )
+        create = reverse(name, args=args)  
+        name, args = self.user_login_url
+        login = reverse(name, args=args)
+        self.assertRedirects(response, f'{login}?next={create}')
+        self.assertEqual(Post.objects.count(), posts_count)

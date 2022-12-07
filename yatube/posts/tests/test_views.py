@@ -75,7 +75,7 @@ class PostViewsTests(TestCase):
 
     def custom_checking_func(self, first_object):
         self.assertEqual(first_object.author.username, self.user.username)
-        self.assertEqual(first_object.text, 'Тестовый пост')
+        self.assertEqual(first_object.text, self.post.text)
         self.assertEqual(first_object.group, self.group)
 
     def test_index_page_show_correct_context(self):
@@ -95,6 +95,8 @@ class PostViewsTests(TestCase):
         self.assertGreaterEqual(len(response.context['page_obj']), 1)
         first_object = response.context['page_obj'][0]
         self.custom_checking_func(first_object)
+        self.assertEqual(
+            response.context.get('group'), self.group)
 
     def test_profile_page_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
@@ -104,6 +106,8 @@ class PostViewsTests(TestCase):
         self.assertGreaterEqual(len(response.context['page_obj']), 1)
         first_object = response.context['page_obj'][0]
         self.custom_checking_func(first_object)
+        self.assertEqual(
+            response.context.get('author'), self.post.author)
 
     def test_post_detail_page_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
@@ -144,9 +148,10 @@ class PaginatorViewsTest(TestCase):
             slug='slug_slug',
             description='Тестовое описание',
         )
+        cls.ALL_POSTS = 13
         Post.objects.bulk_create(
             [Post(author=cls.user, text=f"Тестовый пост {i}", group=cls.group)
-                for i in range(settings.ALL_POSTS)]
+                for i in range(cls.ALL_POSTS)]
         )
 
     def setUp(self):
@@ -164,7 +169,7 @@ class PaginatorViewsTest(TestCase):
         )
 
     def test_first_page_contains_ten_records(self):
-        '''Проверка пагинатора. 10 записей на первой странице'''
+        """Проверка пагинатора. 10 записей на первой странице"""
         for url in self.pagin_urls:
             response = self.guest_client.get(url)
             self.assertEqual(
@@ -173,15 +178,15 @@ class PaginatorViewsTest(TestCase):
             )
 
     def test_second_page_contains_three_records(self):
-        '''Проверка пагинатора. 3 записи на второй странице'''
-        page_number = ceil(settings.ALL_POSTS / settings.POSTS_PER_PAGE)
+        """Проверка пагинатора. 3 записи на второй странице"""
+        page_number = ceil(self.ALL_POSTS / settings.POSTS_PER_PAGE)
         for url in self.pagin_urls:
             response = self.guest_client.get(
                 url + '?page=' + str(page_number)
             )
             self.assertEqual(
                 len(response.context['page_obj']),
-                (settings.ALL_POSTS - (
+                (self.ALL_POSTS - (
                     page_number - 1
                 ) * settings.POSTS_PER_PAGE)
             )

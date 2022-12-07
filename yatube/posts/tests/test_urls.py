@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from django.test import Client, TestCase
+from django.urls import reverse
 
 from ..models import Group, Post, User
 
@@ -23,22 +24,22 @@ class PostUrlsTest(TestCase):
         cls.index_url = (
             '/',
             'posts/index.html',
-            '_'
+            None
         )
         cls.group_url = (
             f'/group/{cls.group.slug}/',
             'posts/group_list.html',
-            '_'
+            None
         )
         cls.profile_url = (
             f'/profile/{cls.user1.username}/',
             'posts/profile.html',
-            '_'
+            None
         )
         cls.post_detail_url = (
             f'/posts/{cls.post.id}/',
             'posts/post_detail.html',
-            '_'
+            None
         )
         cls.post_edit_url = (
             f'/posts/{cls.post.id}/edit/',
@@ -52,22 +53,15 @@ class PostUrlsTest(TestCase):
         )
         cls.urls_any = (
             cls.index_url,
-            cls. group_url,
-            cls. profile_url,
-            cls. post_detail_url
+            cls.group_url,
+            cls.profile_url,
+            cls.post_detail_url
         )
         cls.urls_logged = (
             cls.post_edit_url,
             cls.create_post_url
         )
-        cls.urls_all = (
-            cls.index_url,
-            cls.group_url,
-            cls.profile_url,
-            cls.post_detail_url,
-            cls.post_edit_url,
-            cls.create_post_url
-        )
+        cls.urls_all = cls.urls_any + cls.urls_logged
 
     def setUp(self):
         self.guest_client = Client()
@@ -109,6 +103,22 @@ class PostUrlsTest(TestCase):
         self.authorized_client.force_login(self.user1)
         response = self.authorized_client.get(f'/posts/{self.post.id}/edit/')
         self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_edit_redirect(self):
+        """Редактирование поста не автором"""
+        self.authorized_client.force_login(self.user2)
+        response = self.authorized_client.get(
+            reverse('posts:post_edit',
+                    kwargs={'post_id': self.post.id}
+                    ),
+            follow=True
+        )
+        self.assertRedirects(
+            response,
+            reverse('posts:post_detail',
+                    kwargs={'post_id': self.post.id}
+                    )
+        )
 
     def unexisting_page(self):
         """Несуществующая страница."""
